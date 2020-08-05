@@ -1,0 +1,13 @@
+---
+title: "SI-FinalProject-Part1"
+author: "André Marinho"
+date: "05/08/2020"
+output: pdf_document:
+        keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
