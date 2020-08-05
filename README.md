@@ -1,1 +1,1 @@
-# Coursera-Exploratory-Statistical-Inference-FinalProject
+# Coursera Statistical Inference FinalProject
