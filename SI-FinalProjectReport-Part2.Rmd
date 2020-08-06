@@ -3,8 +3,8 @@ title: "Statistical Inference Course Final Project - Part 2"
 author: "André Marinho"
 date: "05/08/2020"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
