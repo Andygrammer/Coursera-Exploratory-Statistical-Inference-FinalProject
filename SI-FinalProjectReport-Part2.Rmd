@@ -1,0 +1,89 @@
+---
+title: "Statistical Inference Course Final Project - Part 2"
+author: "André Marinho"
+date: "05/08/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 0. Overview
+This is the second part of project report from Coursera Statistical Inference Course. The taks for this part are following:
+
+1. Load the ToothGrowth data and perform some basic exploratory data analyses.
+2. Provide a basic summary of the data.
+3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering).
+4. State your conclusions and the assumptions needed for your conclusions.
+
+## 1. Loading Dataset and Performing EDA
+
+```{r}
+data_toothGrowth <- data("ToothGrowth")
+
+# EDA: get dataset info
+?ToothGrowth
+
+# EDA: data exploration
+library(ggplot2)
+
+head(ToothGrowth)
+dim(ToothGrowth)
+str(ToothGrowth)
+unique(ToothGrowth$len)
+unique(ToothGrowth$supp)
+unique(ToothGrowth$dose)
+
+plot_ToothGrowth <- ggplot(ToothGrowth, aes(x=factor(dose), y=len, fill=factor(dose))) +
+        geom_boxplot() + facet_grid(.~supp) +
+        labs(title="Vitamin Doses for Supplyment Type", x="Dose (mg/day)", y="Tooth Length")
+plot_ToothGrowth
+```
+
+## 2. Summary of the Data
+
+```{r}
+summary(ToothGrowth)
+```
+
+## 3. Getting Confidence Interval
+
+```{r}
+dose05 <- subset(ToothGrowth, dose==0.5)
+dose1 <- subset(ToothGrowth, dose==1.0)
+dose2 <- subset(ToothGrowth, dose==2.0)
+
+test05 <- t.test(len ~ supp, data=dose05, paired=FALSE, var.equal=FALSE)
+test1 <- t.test(len ~ supp, data=dose1, paired=FALSE, var.equal=FALSE)
+test2 <- t.test(len ~ supp, data=dose2, paired=FALSE, var.equal=FALSE)
+
+intervals_pValue <- cbind(test05$p.value, test1$p.value, test2$p.value)
+
+intervals_lower_bound <- cbind(test05$conf.int[1], test1$conf.int[1], test2$conf.int[1])
+
+intervals_upper_bound <- cbind(test05$conf.int[2], test1$conf.int[2], test2$conf.int[2])
+
+confidence_interval_results <- data.frame(
+        "p.value" = c(intervals_pValue),
+        "Conf.Low" = c(intervals_lower_bound),
+        "Conf.High" = c(intervals_upper_bound),
+        row.names = c("Dose 0.5 ->", "Dose 1.0 ->", "Dose 2.0 ->")
+)
+confidence_interval_results
+```
+
+## 4. Assumptions and Conclusions
+Assumptions:
+
+1. Tidy dataset.
+2. Tooth growth differ based on supplement type and dosage.
+
+Conclusions:
+
+1. Tooth growth data follows a normal distribution.
+2. For Doses 0.5mg/day and 1.0mg/day, it rejects the null hypothesis (p-value is less than 5%), meaning Orange Juice (OJ) and Ascorbic Acid (VC) differ significantly at lower doses.
+3. For Dose 2.0mg/day, it fails to reject the null hypothesis (p-value is greather than 5%), meaning OJ and VC does not differ significantly at higher doses.
+4. Increasing the dose of JC or VC increases the tooth growth in guinea pigs.
